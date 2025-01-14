@@ -6,15 +6,19 @@ import numpy as np
 
 import json
 
-def save_embedding(text: str, embedding: List[float]) -> Embedding:
+def save_embedding(chunks: List[str], embeddings: List[List[float]]) -> List[Embedding]:
     """
     Save the embedding as a list in the database.
     """
-    embedding_instance = Embedding.create(
-        text=text,
-        embedding=str(embedding)  # Save as string representation of a list
-    )
-    return embedding_instance
+    embedding_instances = []
+    for i in range(len(chunks)):
+        embedding_instance = Embedding.create(
+            text=chunks[i],
+            embedding=str(embeddings[i])  # Save as string representation of a list
+        )
+        embedding_instances.append(embedding_instance)
+    return embedding_instances
+
 
 def get_embedding_by_id(embedding_id: int):
     embedding_instance = Embedding.get_or_none(Embedding.id == embedding_id)

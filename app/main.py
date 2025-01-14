@@ -32,17 +32,8 @@ class EmbeddingRequest(BaseModel):
 
 
 class TextRequest(BaseModel):
-    text: str
+    chunks: List[str]
 
-
-@app.post("/embedding/")
-async def create_embedding(request: EmbeddingRequest):
-    # Convert the list to a numpy array
-    embedding_array = np.array(request.embedding)
-
-    # Save the embedding in the database
-    embedding_instance = save_embedding(request.text, embedding_array)
-    return {"id": embedding_instance.id, "text": embedding_instance.text}
 
 # Placeholder function to simulate embedding generation from text
 model = SentenceTransformer('paraphrase-MiniLM-L3-v2')
@@ -59,11 +50,17 @@ def compute_embedding_from_text(text: str) -> List[float]:
 @app.post("/embedding/text/")
 async def create_embedding_from_text(request: TextRequest):
     # Compute the embedding from the text (e.g., using a pre-trained model)
-    embedding_array = compute_embedding_from_text(request.text)
+    embedding_array = []
+    for chunk in request.chunks:
+        embedding = compute_embedding_from_text(chunk)  # Use your embedding function here
+        embedding_array.append(embedding)
 
     # Save the embedding in the database
-    embedding_instance = save_embedding(request.text, embedding_array)
-    return {"id": embedding_instance.id, "text": embedding_instance.text}
+    embedding_instances = save_embedding(request.chunks, embedding_array)
+    embeddings = []
+    for embedding in embedding_instances:
+        embeddings.append(__convert_embedding_to_float_list(embedding))
+    return {"embeddings": embeddings}
 
 
 @app.get("/embeddings/{id}")
@@ -75,6 +72,44 @@ async def get_embedding(id: int):
         return {"id": embedding_instance.id, "text": embedding_instance.text, "embedding": embedding}
     else:
         raise HTTPException(status_code=404, detail="Embedding not found")
+
+import json
+
+def __convert_embedding_to_float_list(embedding_instance) -> list:
+    """
+    Convert the embedding instance (stored as string) to a list of floats.
+
+    Args:
+        embedding_instance: The instance containing the embedding (stored as string).
+
+    Returns:
+        list: A list of floats representing the embedding.
+    """
+    try:
+        embedding_str = embedding_instance.embedding  # Assume this is a string
+
+        # Try to split the string into floats (space-separated)
+        try:
+            embedding_floats = list(map(float, embedding_str.split()))
+            print("Successfully converted string to list of floats:", embedding_floats)
+        except ValueError as e:
+            print(f"Error converting string to list using split: {e}")
+            # Handle if the string is not space-separated, maybe log or use defaults
+
+            # Try to deserialize from JSON format (if it's a JSON string of the list)
+            try:
+                embedding_floats = json.loads(embedding_str)
+                print("Successfully deserialized embedding from JSON:", embedding_floats)
+            except json.JSONDecodeError as e:
+                print(f"Error deserializing string from JSON: {e}")
+                # Handle the error (maybe return an empty list or raise exception)
+
+        return embedding_floats
+
+    except Exception as e:
+        print(f"An error occurred while converting embedding: {e}")
+        # Return an empty list or raise exception if needed
+        return []
 
 
 if __name__ == "__main__":
