@@ -1,6 +1,7 @@
 from peewee import Model, BigIntegerField, TextField, FloatField, TimestampField, SQL
-from .database import db
-from peewee import *
+
+from app.database.database import Database
+
 
 class Embedding(Model):
     id = BigIntegerField(primary_key=True)
@@ -10,4 +11,5 @@ class Embedding(Model):
     updated_at = TimestampField(null=False, default=SQL('CURRENT_TIMESTAMP'))
 
     class Meta:
-        database = db
+        #TODO add db - where does it come from now?
+        database = Database().db
