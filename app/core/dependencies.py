@@ -1,3 +1,6 @@
+from contextlib import contextmanager
+from typing import Generator
+
 from app.database.database import Database
 
 
@@ -11,7 +14,8 @@ class Dependency:
         """
         self.db_instance = db_instance
 
-    def get_db(self):
+    @contextmanager
+    def get_db(self) -> Generator:
         """
         Provide a database connection for the duration of a request.
 

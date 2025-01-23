@@ -11,5 +11,4 @@ class Embedding(Model):
     updated_at = TimestampField(null=False, default=SQL('CURRENT_TIMESTAMP'))
 
     class Meta:
-        #TODO add db - where does it come from now?
         database = Database().db

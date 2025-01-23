@@ -30,7 +30,6 @@ class EmbeddingCRUD:
                 try:
                     # If the embedding is a Python literal (like a list in string format)
                     embedding = list(map(float, embedding_str.split()))
-                    print(embedding)
                 except (ValueError, SyntaxError) as e:
                     print(f"Warning converting string to list: {e}")
                     # Handle the error (maybe use default or log)            # json_str = json.dumps(embedding_instance.embedding.tolist())
@@ -43,3 +42,4 @@ class EmbeddingCRUD:
                 print("Error decoding JSON from embedding")
                 return None  # You can raise an HTTPException if needed here
         return None
+
