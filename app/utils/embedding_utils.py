@@ -17,7 +17,7 @@ def compute_embeddings_from_texts(texts: List[str]) -> List[List[float]]:
     Compute embeddings for a list of texts.
     """
     embeddings = model.encode(texts)
-    return [embedding for embedding in embeddings]
+    return [embedding.tolist() for embedding in embeddings]
 
 def convert_embedding_to_float_list(embedding_instance) -> List[float]:
     """
