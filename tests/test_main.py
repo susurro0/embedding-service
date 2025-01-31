@@ -80,4 +80,4 @@ def test_dependency_initialization(mock_database):
     Test that Dependency is initialized with the Database instance.
     """
     dependency = Dependency(mock_database)
-    assert dependency.db_instance == mock_database
+    assert dependency.db == mock_database

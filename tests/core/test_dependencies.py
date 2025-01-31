@@ -8,7 +8,7 @@ from app.core.dependencies import Dependency
 def mock_db_instance():
     # Mock the Database class
     mock_db = mock.Mock(spec=Database)
-    mock_db.db = "mock_connection"
+    mock_db.database = "mock_connection"  # Ensure the `.database` attribute exists
     return mock_db
 
 
@@ -28,6 +28,7 @@ def test_get_db_connects_and_yields(mock_db_instance):
 
         # Ensure that close was called after use
         mock_close.assert_called_once()
+
 
 def test_get_db_closes_connection(mock_db_instance):
     # Create Dependency instance with the mock database

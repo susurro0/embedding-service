@@ -8,7 +8,7 @@ import pytest
 
 from app.crud.embedding_crud import EmbeddingCRUD
 from app.core.dependencies import Dependency
-from app.models.models import Embedding
+from app.models.embedding_model import Embedding
 
 
 @pytest.fixture

@@ -1,4 +1,8 @@
 app/embeddings.db
-
+.env
 htmlcov
 .coverage
+embeddings.db
+tests/.DS_Store
+tests/api/.DS_Store
+tests/embeddings.db

@@ -8,6 +8,7 @@ from app.core.initializer import AppInitializer
 
 from app.database.database import Database
 from crud.embedding_crud import EmbeddingCRUD
+from database.database import database_instance
 
 
 def create_app() -> FastAPI:
@@ -20,11 +21,10 @@ def create_app() -> FastAPI:
         allow_methods=["*"],  # Allow all HTTP methods
         allow_headers=["*"],  # Allow all headers
     )
-    database = Database()
-    initializer = AppInitializer(app, database)  # Adjust `database_instance` as needed
+    initializer = AppInitializer(app, database_instance.database)
     initializer.initialize()
 
-    dependency = Dependency(database)
+    dependency = Dependency(initializer.db)
 
     # Include routers
     embedding_routes = EmbeddingRoutes(dependency=dependency, embedding_crud=EmbeddingCRUD())
