@@ -1,13 +1,10 @@
 import json
 import os
+from peewee import Model, TextField, TimestampField, SQL, AutoField
 
-import numpy as np
-from peewee import Model, BigIntegerField, TextField, TimestampField, SQL, AutoField
-
-from app.database.database import Database
 from pgvector.peewee import VectorField
 
-from database.database import database_instance
+from app.database.database import database_instance
 
 
 class Embedding(Model):
