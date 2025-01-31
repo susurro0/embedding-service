@@ -1,7 +1,10 @@
 import json
 from typing import Optional, List
 
-from app.models.models import Embedding
+import numpy as np
+from fastapi import HTTPException
+
+from app.models.embedding_model import Embedding
 
 
 class EmbeddingCRUD:
@@ -12,34 +15,21 @@ class EmbeddingCRUD:
         Save the embedding as a list in the database.
         """
         embedding_instances = []
-        for i in range(len(chunks)):
+        for chunk, embedding in zip(chunks, embeddings):
             embedding_instance = Embedding.create(
-                text=chunks[i],
-                embedding=str(embeddings[i])  # Save as string representation of a list
+                text=chunk,
+                embedding=embedding  # Save as string representation of a list
             )
             embedding_instances.append(embedding_instance)
         return embedding_instances
 
     def get_embedding_by_id(self, embedding_id: int):
         embedding_instance = Embedding.get_or_none(Embedding.id == embedding_id)
+        try:
 
-        if embedding_instance:
-            try:
-                embedding = None
-                embedding_str = embedding_instance.embedding  # Assume this is a string
-                try:
-                    # If the embedding is a Python literal (like a list in string format)
-                    embedding = list(map(float, embedding_str.split()))
-                except (ValueError, SyntaxError) as e:
-                    print(f"Warning converting string to list: {e}")
-                    # Handle the error (maybe use default or log)            # json_str = json.dumps(embedding_instance.embedding.tolist())
-
-                # Deserialize the embedding from JSON string back into a list
-                embedding = json.loads(embedding_str)
-                print("##5")
-                return embedding_instance, embedding
-            except json.JSONDecodeError:
-                print("Error decoding JSON from embedding")
-                return None  # You can raise an HTTPException if needed here
+            if embedding_instance:
+                return embedding_instance, embedding_instance.embedding
+        except Exception:
+            raise HTTPException(status_code=404, detail="Embedding not found")
         return None
 

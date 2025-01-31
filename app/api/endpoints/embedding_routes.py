@@ -19,6 +19,7 @@ class EmbeddingRoutes:
         @self.router.post("/embedding/text/")
         async def create_embedding_from_text(request: TextRequest):
             embeddings = compute_embeddings_from_texts(request.chunks)
+
             embedding_instances = embedding_crud.save_embedding(request.chunks, embeddings)
             return {"embeddings": [convert_embedding_to_float_list(instance) for instance in embedding_instances]}
 

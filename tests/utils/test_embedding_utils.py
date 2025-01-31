@@ -35,7 +35,6 @@ def test_compute_embeddings_from_texts(mock_model):
     """Test compute_embeddings_from_texts."""
     # Arrange
     texts = ["Test input 1", "Test input 2"]
-    # mock_model.encode.return_value = [[1.0, 2.0, 3.0], [4.0, 5.0, 6.0]]
     mock_model.encode.return_value = [np.array([1.0, 2.0, 3.0]), np.array([4.0, 5.0, 6.0])]
 
     # Act
