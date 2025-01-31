@@ -5,10 +5,8 @@ from app.api.endpoints import EmbeddingRoutes
 from app.core.dependencies import Dependency
 from app.core.initializer import AppInitializer
 
-
-from app.database.database import Database
-from crud.embedding_crud import EmbeddingCRUD
-from database.database import database_instance
+from app.crud.embedding_crud import EmbeddingCRUD
+from app.database.database import database_instance
 
 
 def create_app() -> FastAPI:
@@ -31,11 +29,11 @@ def create_app() -> FastAPI:
     app.include_router(embedding_routes.router)
     return app
 
+app = create_app()
 
-
-
-if __name__ == "__main__": # pragma: no cover
-    import uvicorn
-
-    app = create_app()
-    uvicorn.run(app, host="0.0.0.0", port=9002)
+#
+# if __name__ == "__main__": # pragma: no cover
+#     import uvicorn
+#
+#     app = create_app()
+#     uvicorn.run(app)
