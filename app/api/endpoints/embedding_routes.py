@@ -11,7 +11,7 @@ from app.utils.embedding_utils import compute_embeddings_from_texts, convert_emb
 
 
 class EmbeddingRoutes:
-    def __init__(self, dependency: Dependency, embedding_crud=EmbeddingCRUD):
+    def __init__(self, dependency: Dependency, embedding_crud=EmbeddingCRUD()):
         self.router = APIRouter()
         self.db = dependency.get_db  # Assuming `get_db` is the correct way to access the database session
         self.embedding_crud = embedding_crud
@@ -21,7 +21,7 @@ class EmbeddingRoutes:
             embeddings = compute_embeddings_from_texts(request.chunks)
 
             embedding_instances = embedding_crud.save_embedding(request.chunks, embeddings)
-            return {"embeddings": [convert_embedding_to_float_list(instance) for instance in embedding_instances]}
+            return {"embeddings": [instance.embedding for instance in embedding_instances]}
 
 
         @self.router.get("/embeddings/{id}")
